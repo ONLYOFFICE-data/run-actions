@@ -1,0 +1,56 @@
+name: Builder test
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs every day at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  builder-test-spec:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Checkout main repository Dep.Tests
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE-data/Dep.Tests
+          token: ${{ secrets.READ_PAT }}
+          path: Dep.Tests
+
+      - name: Checkout build_tools repository
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/build_tools
+          token: ${{ secrets.READ_PAT }}
+          path: build_tools
+
+      - name: Checkout office-js-api repository
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE/office-js-api
+          token: ${{ secrets.READ_PAT }}
+          path: office-js-api
+
+      - name: Check release/hotfix branch for build
+        run: |
+          cd build_tools/scripts/sdkjs_common/jsdoc
+          branch=$(python get_latest_branch.py)
+          echo "Branch for build: $branch"
+          echo "build_branch=$branch" >> $GITHUB_ENV
+
+      - name: Set config to run
+        run: 'echo "{ \"branch\": \"${build_branch}\", \"build\": \"latest\" }" > Dep.Tests/docbuilder/config.json'
+
+      - name: Install p7zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+
+      - name: Run Python script to test
+        run: |
+          cd Dep.Tests/docbuilder
+          python update.py
+          python check-docs.py
