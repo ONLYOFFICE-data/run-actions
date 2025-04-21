@@ -1,0 +1,39 @@
+name: Puppeteer DocServer test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  puppeteer-docserver:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Set up nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+
+      - name: Checkout main repository Dep.Tests
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE-data/Dep.Tests
+          path: Dep.Tests
+          submodules: true
+          token: ${{ secrets.READ_PAT }}
+
+      - name: Run tests
+        run: |
+          cd Dep.Tests
+          cd puppeteer/engine
+          npm install
+          python run.py
