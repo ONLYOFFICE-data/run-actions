@@ -28,7 +28,7 @@ jobs:
             const filePath = 'Dep.Tests/tools/report_portal/config.json';
             const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             
-            config.api_key = "test_key;
+            config.api_key = 'test_key';
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
