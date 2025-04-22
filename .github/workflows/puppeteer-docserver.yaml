@@ -31,6 +31,18 @@ jobs:
           submodules: true
           token: ${{ secrets.READ_PAT }}
 
+      - name: Add reports key to config
+        run: |
+          node -e "
+            const fs = require('fs');
+            const filePath = 'Dep.Tests/tools/report_portal/config.json';
+            const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            
+            config.api_key = '${{ secrets.REPORT_KEY }};';
+            
+            fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
+          "
+
       - name: Run tests
         run: |
           cd Dep.Tests
