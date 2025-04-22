@@ -21,6 +21,9 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             Workflow: ${{ github.workflow }}
+
+            Github job: ${{ github.job }}
+            Github job status: ${{ github.job.status }}
             
             See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             
