@@ -55,7 +55,7 @@ jobs:
           python update.py
           python check-docs.py
 
-      - name: send default message
+      - name: Send message to telegram
         if: always()
         uses: appleboy/telegram-action@master
         with:
