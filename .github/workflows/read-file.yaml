@@ -38,3 +38,9 @@ jobs:
         run: |
           content="$(cat Dep.Tests/tools/report_portal/config.json)"
           echo "$content"
+
+      - name: send default message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
