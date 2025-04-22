@@ -22,5 +22,5 @@ jobs:
           message: |
             Workflow: ${{ github.workflow }}
             
-            See action run logs: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+            See action run logs: ${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}/actions/runs/${{ GITHUB_RUN_ID }}
             
