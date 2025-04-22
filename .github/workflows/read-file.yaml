@@ -29,6 +29,7 @@ jobs:
 
             Github job: ${{ github.job }}
             Github job status: ${{ job.status }}
+            Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
             
             See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             
