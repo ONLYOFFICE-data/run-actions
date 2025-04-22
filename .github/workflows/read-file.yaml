@@ -13,6 +13,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
+      - name: First task
+        run: |
+          echo "Running first task"
+          exit 1
+      
       - name: send default message
         if: always()
         uses: appleboy/telegram-action@master
