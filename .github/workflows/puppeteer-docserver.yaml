@@ -49,3 +49,16 @@ jobs:
           cd puppeteer/engine
           npm install
           python run.py
+
+      - name: Send message to telegram
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            Workflow: ${{ github.workflow }}
+
+            Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
+            
+            See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
