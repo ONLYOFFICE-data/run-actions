@@ -8,37 +8,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
     
     runs-on: ${{ matrix.os }}
     
     steps:
-      - name: Checkout main repository Dep.Tests
-        uses: actions/checkout@v4
-        with:
-          repository: ONLYOFFICE-data/Dep.Tests
-          path: Dep.Tests
-          submodules: true
-          token: ${{ secrets.READ_PAT }}
-      
-      - name: Update JSON file
-        run: |
-          node -e "
-            const fs = require('fs');
-            const filePath = 'Dep.Tests/tools/report_portal/config.json';
-            const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-            
-            config.api_key = '${{ secrets.REPORT_KEY }};';
-            
-            fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
-          "
-      
-      - name: Read file
-        shell: bash
-        run: |
-          content="$(cat Dep.Tests/tools/report_portal/config.json)"
-          echo "$content"
-
       - name: send default message
         uses: appleboy/telegram-action@master
         with:
