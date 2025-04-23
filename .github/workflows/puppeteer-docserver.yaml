@@ -28,8 +28,19 @@ jobs:
         with:
           repository: ONLYOFFICE-data/Dep.Tests
           path: Dep.Tests
-          submodules: true
           token: ${{ secrets.READ_PAT }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+          git config --global url."https://${{ secrets.READ_PAT }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Init specific submodule
+        run: |
+          cd Dep.Tests
+          git submodule update --init --depth 1 puppeteer/files
 
       - name: Add reports key to config
         run: |
