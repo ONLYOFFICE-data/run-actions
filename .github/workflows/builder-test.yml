@@ -7,6 +7,11 @@ on:
 
 jobs:
   builder-test-spec:
+    strategy:
+      fail-fast: false
+      matrix:
+        license: ['', '${{ github.workspace }}/Dep.Tests/docbuilder/.license/license.xml']
+    
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +56,7 @@ jobs:
 
       - name: Run Python script to test
         run: |
-          export ONLYOFFICE_BUILDER_LICENSE=${{ github.workspace }}/Dep.Tests/docbuilder/.license/license.xml
+          export ONLYOFFICE_BUILDER_LICENSE=${{ matrix.license }}
           cd Dep.Tests/docbuilder
           python update.py
           python check-docs.py
