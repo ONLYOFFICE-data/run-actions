@@ -5,40 +5,29 @@ on:
 
 jobs:
   read-json:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     steps:
-      - name: First task
+      - name: Checkout main repository Dep.Tests
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE-data/Dep.Tests
+          path: Dep.Tests
+          token: ${{ secrets.READ_PAT }}
+      
+      - name: Add reports key to config
         run: |
-          echo "Running first task"
-          exit 1
-
-      - name: Send message to telegram
-        if: always()
-        shell: bash
-        env:
-          MESSAGE: |
-            Workflow: ${{ github.workflow }}
-
-            Github job: ${{ github.job }}
-            Github job status: ${{ job.status }}
-            Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
+          node -e "
+            const fs = require('fs');
+            const filePath = 'Dep.Tests/tools/report_portal/config.json';
+            const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             
-            See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          MESSAGE=$(echo "$MESSAGE" | sed 's/"/\\"/g')
+            config.api_key = '${{ secrets.REPORT_KEY }};';
+            config.project_name = 'docsserver';
+            config.launch_name = 'Github Action ${{ matrix.os }} Chrome';
+            
+            fs.writeFileSync(filePath, JSON.stringify(config));
+          "
 
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
-          -H "Content-Type: application/json" \
-          -d "{
-            \"chat_id\": \"${{ secrets.TELEGRAM_TO }}\",
-            \"text\": \"$MESSAGE\",
-            \"parse_mode\": \"Markdown\",
-            \"disable_notification\": true,
-            \"disable_web_page_preview\": true
-          }"
+      - name: Print config
+        run: cat 'Dep.Tests/tools/report_portal/config.json'
