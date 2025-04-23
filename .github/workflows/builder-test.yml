@@ -51,7 +51,7 @@ jobs:
 
       - name: Run Python script to test
         run: |
-          export ONLYOFFICE_BUILDER_LICENSE=./Dep.Tests/docbuilder/.license/license.xml
+          export ONLYOFFICE_BUILDER_LICENSE=realpath ./Dep.Tests/docbuilder/.license/license.xml
           cd Dep.Tests/docbuilder
           python update.py
           python check-docs.py
