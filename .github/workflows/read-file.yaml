@@ -24,8 +24,12 @@ jobs:
           repository: ONLYOFFICE-data/Dep.Tests
           path: Dep.Tests
           ref: 'test-linux-action'
-          submodules: true
           token: ${{ secrets.READ_PAT }}
+
+      - name: Init specific submodule
+        run: |
+          cd Dep.Tests
+          git submodule update --init --depth 1 puppeteer/files
 
       - name: Add reports key to config
         run: |
