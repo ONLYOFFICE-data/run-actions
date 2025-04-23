@@ -52,13 +52,23 @@ jobs:
 
       - name: Send message to telegram
         if: always()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
+        shell: bash
+        env:
+          MESSAGE: |
             Workflow: ${{ github.workflow }}
-
+            Github job: ${{ github.job }}
+            Github job status: ${{ job.status }}
             Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
             
             See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          MESSAGE=$(echo "$MESSAGE" | sed 's/"/\\"/g')
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"chat_id\": \"${{ secrets.TELEGRAM_TO }}\",
+            \"text\": \"$MESSAGE\",
+            \"parse_mode\": \"Markdown\",
+            \"disable_notification\": true,
+            \"disable_web_page_preview\": true
+          }"
