@@ -6,15 +6,26 @@ on:
 jobs:
   read-json:
     runs-on: ubuntu-latest
-    
+
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Set up nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+
       - name: Checkout main repository Dep.Tests
         uses: actions/checkout@v4
         with:
           repository: ONLYOFFICE-data/Dep.Tests
           path: Dep.Tests
+          submodules: true
           token: ${{ secrets.READ_PAT }}
-      
+
       - name: Add reports key to config
         run: |
           node -e "
@@ -22,12 +33,16 @@ jobs:
             const filePath = 'Dep.Tests/tools/report_portal/config.json';
             const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             
-            config.api_key = '${{ secrets.REPORT_KEY }};';
-            config.project_name = 'docsserver';
-            config.launch_name = 'Github Action ${{ matrix.os }} Chrome';
+            config.api_key = '${{ secrets.REPORT_KEY }}';
+            config.project_name = 'trofim24_personal';
+            config.launch_name = 'Github Action linux Chrome';
             
-            fs.writeFileSync(filePath, JSON.stringify(config));
+            fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
 
-      - name: Print config
-        run: cat 'Dep.Tests/tools/report_portal/config.json'
+      - name: Run tests
+        run: |
+          cd Dep.Tests
+          cd puppeteer/engine
+          npm install
+          python run.py tests/desktop/cell/smoke/check_replace_all.js
