@@ -23,6 +23,7 @@ jobs:
         with:
           repository: ONLYOFFICE-data/Dep.Tests
           path: Dep.Tests
+          ref: 'test-linux-action'
           submodules: true
           token: ${{ secrets.READ_PAT }}
 
