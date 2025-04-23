@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     
     runs-on: ${{ matrix.os }}
     
@@ -17,14 +17,12 @@ jobs:
         run: |
           echo "Running first task"
           exit 1
-      
-      - name: send default message
+
+      - name: Send message to telegram
         if: always()
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
+        shell: bash
+        run: |
+          message = '
             Workflow: ${{ github.workflow }}
 
             Github job: ${{ github.job }}
@@ -32,4 +30,14 @@ jobs:
             Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
             
             See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            
+          '
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"chat_id\": \"${{ secrets.TELEGRAM_TO }}\",
+            \"text\": \"$message\",
+            \"parse_mode\": \"Markdown\",
+            \"disable_notification\": true,
+            \"disable_web_page_preview\": true
+          }"
