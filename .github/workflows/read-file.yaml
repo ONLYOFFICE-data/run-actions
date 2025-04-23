@@ -45,5 +45,5 @@ jobs:
           cd Dep.Tests
           cd puppeteer/engine
           npm install
-          export DISPLAY=:1
+          export DISPLAY=:0
           python run.py tests/desktop/cell/smoke/check_replace_all.js
