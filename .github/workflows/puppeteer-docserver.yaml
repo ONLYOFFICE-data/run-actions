@@ -39,6 +39,8 @@ jobs:
             const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             
             config.api_key = '${{ secrets.REPORT_KEY }};';
+            config.project_name = 'docsserver';
+            config.launch_name = 'Github Action ${{ matrix.os }} Chrome';
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
