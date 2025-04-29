@@ -1,0 +1,27 @@
+name: api site test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  api-site-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Set up nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+
+      - name: Checkout main repository Dep.Tests
+        uses: actions/checkout@v4
+        with:
+          repository: ONLYOFFICE-data/Dep.Tests
+          path: Dep.Tests
+          token: ${{ secrets.READ_PAT }}
+
+      - name: Run tests
+        run: |
+          cd Dep.Tests/puppeteer/test-api-page
+          npm install
+          node run.js https://api.teamlab.info/
