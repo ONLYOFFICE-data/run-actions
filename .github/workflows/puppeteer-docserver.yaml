@@ -8,15 +8,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - os: ubuntu-latest
-            platform: linux
-          - os: windows-latest
-            platform: win
-          - os: macos-latest
-            platform: mac
+        os: [ubuntu-latest, windows-latest, macos-latest]
     
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Set up Python
@@ -62,24 +56,12 @@ jobs:
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
 
-      - name: Disable animate output
-        run: |
-          node -e "
-            const fs = require('fs');
-            const filePath = 'Dep.Tests/puppeteer/config_chrome_${{ matrix.config.platform }}.json';
-            const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-            
-            config.runOptions.disable_animation = true;
-            
-            fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
-          "
-
       - name: Run tests
         run: |
           cd Dep.Tests
           cd puppeteer/engine
           npm install
-          python run.py
+          python run.py --disable_animation
 
       - name: Send message to telegram
         if: always()
