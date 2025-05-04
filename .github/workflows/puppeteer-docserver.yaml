@@ -8,9 +8,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        config:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
     
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
 
     steps:
       - name: Set up Python
@@ -52,6 +58,18 @@ jobs:
             config.api_key = '${{ secrets.REPORT_KEY }}';
             config.project_name = 'docsserver';
             config.launch_name = 'Github Action ${{ matrix.os }} Chrome';
+            
+            fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
+          "
+
+      - name: Disable animate output
+        run: |
+          node -e "
+            const fs = require('fs');
+            const filePath = 'Dep.Tests/puppeteer/config_chrome_${{ matrix.config.platform }}.json';
+            const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            
+            config.runOptions.disable_animation = true;
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
