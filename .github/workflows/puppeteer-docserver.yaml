@@ -70,8 +70,6 @@ jobs:
           "
 
       - name: Run tests
-        env:
-          PYTHONIOENCODING: utf-8
         run: |
           cd Dep.Tests
           cd puppeteer/engine
