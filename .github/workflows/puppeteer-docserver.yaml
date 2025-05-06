@@ -77,7 +77,7 @@ jobs:
           npm install
 
           # Configure Puppeteer sandbox with https://pptr.dev/troubleshooting#issues-with-apparmor-on-ubuntu
-          if matrix.os == 'ubuntu-latest':
+          if matrix.os == 'ubuntu-latest'; then
             # cd to Puppeteer cache directory (adjust the path if using a different cache directory)
             CHROME_VERSION=$(ls ~/.cache/puppeteer/chrome/linux-* -d 2>/dev/null | head -n 1 | xargs basename 2>/dev/null || echo "")
             if [ -z "$CHROME_VERSION" ]; then
