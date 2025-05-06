@@ -88,8 +88,10 @@ jobs:
               sudo chmod 4755 chrome_sandbox
               # copy sandbox executable to a shared location
               sudo cp -p chrome_sandbox /usr/local/sbin/chrome-devel-sandbox
-              # export CHROME_DEVEL_SANDBOX env variable
-              echo "CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox" >> $GITHUB_ENV
+            fi
+            # export CHROME_DEVEL_SANDBOX env variable
+            echo "CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox" >> $GITHUB_ENV
+          fi
       
       - name: Run tests
         run: |
