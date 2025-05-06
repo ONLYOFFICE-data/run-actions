@@ -90,7 +90,7 @@ jobs:
               sudo cp -p chrome_sandbox /usr/local/sbin/chrome-devel-sandbox
               # export CHROME_DEVEL_SANDBOX env variable
               echo "CHROME_DEVEL_SANDBOX=/usr/local/sbin/chrome-devel-sandbox" >> $GITHUB_ENV
-
+      
       - name: Run tests
         run: |
           cd Dep.Tests/puppeteer/engine
