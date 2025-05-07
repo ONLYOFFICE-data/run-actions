@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: Branch to test
+        description: Stand to test
         required: true
         default: release
         type: choice
@@ -13,14 +13,23 @@ on:
         - hotfix
         - develop
 
+env:
+  SELECTED_URL: ${{ github.event.inputs.url == 'release' && secrets.URL_RELEASE || github.event.inputs.url == 'hotfix' && secrets.URL_HOTFIX || secrets.URL_DEVELOP }}
+
 jobs:
   puppeteer-docserver:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        config:
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
     
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
 
     steps:
       - name: Set up Python
@@ -52,6 +61,18 @@ jobs:
           cd Dep.Tests
           git submodule update --init --depth 1 puppeteer/files
 
+      - name: Set stand url to config
+        run: |
+          node -e "
+            const fs = require('fs');
+            const filePath = 'Dep.Tests/puppeteer/config_chrome_${{ matrix.config.platform }}.json';
+            const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            
+            config.testOptions.url = process.env.SELECTED_URL;
+            
+            fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
+          "
+
       - name: Add reports key to config
         run: |
           node -e "
@@ -61,13 +82,13 @@ jobs:
             
             config.api_key = '${{ secrets.REPORT_KEY }}';
             config.project_name = 'docsserver';
-            config.launch_name = 'Github Action ${{ matrix.os }} Chrome';
+            config.launch_name = 'Github Action ${{ matrix.config.os }} Chrome';
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
 
       - name: Set headless mode for linux
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.config.os == 'ubuntu-latest'
         run: |
           node -e "
             const fs = require('fs');
@@ -85,7 +106,7 @@ jobs:
           npm install
 
       - name: Configure Puppeteer sandbox
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.config.os == 'ubuntu-latest'
         run: |
           # Configure Puppeteer sandbox with https://pptr.dev/troubleshooting#issues-with-apparmor-on-ubuntu
           # cd to Puppeteer cache directory (adjust the path if using a different cache directory)
@@ -113,7 +134,7 @@ jobs:
         env:
           MESSAGE: |
             Workflow: ${{ github.workflow }}
-            Github job: ${{ github.job }} - ${{ matrix.os }}
+            Github job: ${{ github.job }} - ${{ matrix.config.os }}
             Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
             
             See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
