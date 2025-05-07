@@ -1,4 +1,5 @@
-name: Puppeteer DocServer test - ${{ github.event.inputs.url }}
+name: Puppeteer DocServer test
+run-name: DocServer - ${{ github.event.inputs.url }} test
 
 on:
   workflow_dispatch:
