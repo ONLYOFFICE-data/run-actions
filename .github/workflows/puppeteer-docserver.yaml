@@ -68,7 +68,7 @@ jobs:
             const filePath = 'Dep.Tests/puppeteer/config_chrome_${{ matrix.config.platform }}.json';
             const config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
             
-            config.testOptions.url = '${process.env.SELECTED_URL}example';
+            config.testOptions.url = process.env.SELECTED_URL + 'example';
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
