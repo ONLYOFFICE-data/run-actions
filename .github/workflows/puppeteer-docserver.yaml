@@ -2,6 +2,16 @@ name: Puppeteer DocServer test
 
 on:
   workflow_dispatch:
+    inputs:
+      url:
+        description: Branch to test
+        required: true
+        default: release
+        type: choice
+        options:
+        - release
+        - hotfix
+        - develop
 
 jobs:
   puppeteer-docserver:
