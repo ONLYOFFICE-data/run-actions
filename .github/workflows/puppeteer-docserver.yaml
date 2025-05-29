@@ -138,7 +138,8 @@ jobs:
             Github job: ${{ github.job }} - ${{ matrix.config.os }}
             Github job status: ${{ job.status == 'success' && '\u2705' || job.status == 'failure' && '\u274C' || '\u2753' }} - ${{ job.status }}
             
-            See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            [View Action Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            [View Job Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }})
         run: |
           MESSAGE=$(echo "$MESSAGE" | sed 's/"/\\"/g')
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
