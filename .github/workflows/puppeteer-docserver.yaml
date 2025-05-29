@@ -136,7 +136,7 @@ jobs:
           MESSAGE: |
             Workflow: ${{ github.workflow }}
             Github job: ${{ github.job }} - ${{ matrix.config.os }}
-            Github job status: ${{ job.status == 'success' && '✅' || job.status == 'failure' && '❌' || '❓' }} - ${{ job.status }}
+            Github job status: ${{ job.status == 'success' && '\u2705' || job.status == 'failure' && '\u274C' || '\u2753' }} - ${{ job.status }}
             
             See action run logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
