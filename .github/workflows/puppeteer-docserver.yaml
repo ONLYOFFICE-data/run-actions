@@ -129,6 +129,12 @@ jobs:
           cd Dep.Tests/puppeteer/engine
           python run.py --disable_animation
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: |
+            Dep.Tests/puppeteer/out
+
       - name: Send message to telegram
         if: always()
         shell: bash
