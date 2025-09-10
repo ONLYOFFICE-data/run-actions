@@ -132,6 +132,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
+          name: out - ${{ matrix.config.os }}
           path: |
             Dep.Tests/puppeteer/out
 
