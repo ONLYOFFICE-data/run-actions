@@ -83,7 +83,7 @@ jobs:
             
             config.api_key = '${{ secrets.REPORT_KEY }}';
             config.project_name = 'docsserver';
-            config.launch_name = 'Github Action ${{ matrix.config.os }} Chrome';
+            config.launch_name = 'Github Action All Tests';
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
