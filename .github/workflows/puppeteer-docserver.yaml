@@ -25,8 +25,8 @@ jobs:
         config:
           - os: windows-latest
             platform: win
-#          - os: macos-latest
-#            platform: mac
+          - os: macos-latest
+            platform: mac
           - os: ubuntu-latest
             platform: linux
     
