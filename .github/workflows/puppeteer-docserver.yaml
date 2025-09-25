@@ -83,7 +83,7 @@ jobs:
             
             config.api_key = '${{ secrets.REPORT_KEY }}';
             config.project_name = 'docsserver';
-            config.launch_name = 'Github Action ${{ matrix.config.os }} Chrome';
+            config.launch_name = 'Github Action All Tests';
             
             fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
           "
@@ -128,6 +128,13 @@ jobs:
         run: |
           cd Dep.Tests/puppeteer/engine
           python run.py --disable_animation
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: out - ${{ matrix.config.os }}
+          path: |
+            Dep.Tests/puppeteer/out
 
       - name: Send message to telegram
         if: always()
